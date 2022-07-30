@@ -12,6 +12,7 @@ import (
 	"github.com/glugox/uno/pkg/log"
 	"github.com/glugox/uno/pkg/schema"
 	"github.com/glugox/uno/pkg/utils"
+	"github.com/google/uuid"
 	"golang.org/x/exp/slices"
 )
 
@@ -85,6 +86,7 @@ func NewConfig() (*Config, error) {
 // AppConfig
 type AppConfig struct {
 	BasePath string
+	Key      string
 	Verbose  bool
 }
 
@@ -99,6 +101,7 @@ func NewAppConfig() (*AppConfig, error) {
 
 	cfg := &AppConfig{
 		BasePath: basePath,
+		Key:      uuid.NewString(),
 	}
 
 	return cfg, nil
@@ -183,7 +186,7 @@ type ServerConfig struct {
 // with default values
 func NewServerConfig() *ServerConfig {
 	return &ServerConfig{
-		Address: ":9090",
+		Address: utils.Env("PORT", ":9090"),
 	}
 }
 

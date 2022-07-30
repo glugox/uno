@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"os"
 
-	uno "github.com/glugox/uno/pkg"
+	log "github.com/glugox/uno/pkg/log"
+	utils "github.com/glugox/uno/pkg/utils"
 	"github.com/spf13/cobra"
 )
 
 var RootVerbose bool
-var CMDLogger = uno.DefaultLogFactory().NewLogger()
+var CMDLogger = log.DefaultLogFactory().NewLogger()
 
 var rootCmd = &cobra.Command{
 	Use:   "uno",
@@ -25,7 +26,7 @@ var rootCmd = &cobra.Command{
 func Execute() {
 	// Try to attach the default specified
 	// command to main command args
-	cDft := uno.Env("CMD_DEFAULT", "")
+	cDft := utils.Env("CMD_DEFAULT", "")
 	if cDft != "" {
 		rootCmd.SetArgs([]string{cDft})
 	}
