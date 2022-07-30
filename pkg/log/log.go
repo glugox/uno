@@ -1,4 +1,4 @@
-package uno
+package log
 
 // At this point, this is only a facade around Go std lib "log"
 

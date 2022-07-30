@@ -1,4 +1,4 @@
-package uno
+package config
 
 import (
 	"encoding/json"
@@ -9,7 +9,9 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/glugox/uno/pkg/log"
 	"github.com/glugox/uno/pkg/schema"
+	"github.com/glugox/uno/pkg/utils"
 	"golang.org/x/exp/slices"
 )
 
@@ -123,7 +125,7 @@ type MigrateConfig struct {
 // NewConfig returns new Config instance
 // for the current environment
 func NewDBConfig() *DBConfig {
-	conn := Env("DB_CONNECTION", "sqlite3")
+	conn := utils.Env("DB_CONNECTION", "sqlite3")
 
 	switch conn {
 	case schema.DBAdapterSqlite:
@@ -138,12 +140,12 @@ func NewDBConfig() *DBConfig {
 // for the current environment
 func NewMySqlDBConfig() *DBConfig {
 	return &DBConfig{
-		Name:     DBAdapterMySql,
-		Host:     Env("DB_HOST", "127.0.0.1"),       // 127.0.0.1
-		Port:     Env("DB_PORT", "3306"),            // 3306
-		User:     Env("DB_USERNAME", "root"),        // root
-		Password: Env("DB_PASSWORD", "root"),        // root
-		DBName:   Env("DB_DATABASE", "go_uno_demo"), // go_uno_demo
+		Name:     schema.DBAdapterMySql,
+		Host:     utils.Env("DB_HOST", "127.0.0.1"),       // 127.0.0.1
+		Port:     utils.Env("DB_PORT", "3306"),            // 3306
+		User:     utils.Env("DB_USERNAME", "root"),        // root
+		Password: utils.Env("DB_PASSWORD", "root"),        // root
+		DBName:   utils.Env("DB_DATABASE", "go_uno_demo"), // go_uno_demo
 		Migrate:  NewMigrateConfig(),
 	}
 }
@@ -152,8 +154,8 @@ func NewMySqlDBConfig() *DBConfig {
 // for the current environment
 func NewSqliteDBConfig() *DBConfig {
 	return &DBConfig{
-		Name:    DBAdapterSqlite,
-		DSN:     Env("DB_DSN", "./uno.db"),
+		Name:    schema.DBAdapterSqlite,
+		DSN:     utils.Env("DB_DSN", "./uno.db"),
 		Migrate: NewMigrateConfig(),
 	}
 }
@@ -242,7 +244,7 @@ func (c *DBConfig) ToString() string {
 // ReplaceTplVars replaces tpl vars like {App.BasePath} with actuall values
 func ReplaceTplVars(cfg *Config) (*Config, error) {
 
-	logger := DefaultLogFactory().NewLogger()
+	logger := log.DefaultLogFactory().NewLogger()
 	var newCfg Config
 	bJson, err := json.Marshal(cfg)
 	if err != nil {

@@ -1,4 +1,4 @@
-package uno
+package utils
 
 import (
 	"os"
