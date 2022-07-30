@@ -1,0 +1,7 @@
+CREATE TABLE menus
+	(
+		`id`         TEXT PRIMARY KEY,
+		`label`      TEXT NOT NULL,
+		`created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+		`updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP
+	);

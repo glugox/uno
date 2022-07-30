@@ -1,0 +1,4 @@
+Changelog - 28. Jul 2022
+
+1. DBContaxt (context) change to Session
+2. Don't use interface for DB Adapters ( or tiny only )

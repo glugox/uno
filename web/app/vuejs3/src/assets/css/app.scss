@@ -1,0 +1,10 @@
+$assets-base: "..";
+$dark: #475569;
+
+$baseUrl: "/__tpl/t";
+
+@import "/__tpl/t/src/scss/tabler.scss";
+@import "/__tpl/t/src/scss/tabler-flags.scss";
+@import "/__tpl/t/src/scss/tabler-payments.scss";
+@import "/__tpl/t/src/scss/tabler-vendors.scss";
+@import "/__tpl/t/src/scss/demo.scss";
