@@ -26,6 +26,8 @@ type Collection interface {
 	// Marshall to json only the wields we have
 	Marshal() ([]byte, error)
 
+	//ToReflection(r reflect.Value) Collection
+
 	//GetStructName() string
 }
 
@@ -46,6 +48,11 @@ func NewCollectionBase(rfl reflect.Value) *CollectionBase {
 		reflection: rfl,
 		items:      []Model{},
 	}
+}
+
+// NewCollection creates new empty collection for the passed model
+func NewCollection(m Model) Collection {
+	return NewCollectionBase(reflect.ValueOf(m))
 }
 
 // ModelReflect implements Collection.ModelReflect
@@ -71,19 +78,28 @@ func (c *CollectionBase) AppendValue(val reflect.Value) {
 }
 
 func (c *CollectionBase) Marshal() ([]byte, error) {
+
 	fNames := []string{}
 	if c.Size() > 0 {
-		fNames = c.items[0].BaseFieldNames()
+		fNames = BaseFieldNames(c.items[0])
 	}
+	fmt.Printf("Fiald names to marshal: %s \n", fNames)
 	return MarshalOnlyCollection(c, fNames)
 }
+
+/*func (c *CollectionBase) ToReflection(r reflect.Value) Collection {
+
+	rc := NewCollectionBase(c.ModelReflect())
+	// TODO:
+	return rc
+}*/
 
 // Print
 func (c *CollectionBase) Print() {
 	fmt.Printf(c.StructName)
 	fmt.Printf("[%s] {%d}: \n", c.StructName, c.Size())
 	for _, i := range c.items {
-		fmt.Printf(" |_ %s\n", i.ToString())
+		fmt.Printf(" |_ %s\n", ToString(i))
 	}
 
 }

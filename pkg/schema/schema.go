@@ -2,10 +2,10 @@ package schema
 
 type Model interface {
 	// Table
-	Meta() TableMeta
+	//Meta() TableMeta
 	// BaseFieldNames returns slice of field name
 	// that are by default loadable from database.
-	BaseFieldNames() []string
+	//BaseFieldNames() []string
 	// ExtraFields accepts slice of field names we want
 	// to return merged with BaseFields as FieldCol
 	//ExtraFields(qF []string) *FieldCol
@@ -13,6 +13,10 @@ type Model interface {
 	//BeforeUpdate()
 	//Validate() bool
 	// Collection
-	Collection() Collection
-	ToString() string
+	//Collection() Collection
+	//ToString() string
+}
+
+type Namer interface {
+	Name() string
 }

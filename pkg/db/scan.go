@@ -45,7 +45,7 @@ func Scan(rows *sql.Rows, col schema.Collection, query *schema.Query) error {
 			valMap[colName] = *val
 		}
 
-		// Create new tzero val Model, so we can scan into it
+		// Create new zero val Model, so we can scan into it
 		// and append it to collection
 		rValP := col.CreateModel()
 		// Get the value instead pointer
@@ -114,4 +114,19 @@ func setReflValue(rType reflect.Type, rValF reflect.Value, item interface{}) {
 			}
 		}
 	}
+}
+
+func ScanRelations(rows *sql.Rows, col schema.Collection, query *schema.Query) {
+
+	fmt.Printf("ScanRelations : %s \n", col.ModelReflect().Type())
+	fields := schema.Fields(col.CreateModel().Interface().(schema.Model))
+
+	for _, f := range fields.Items() {
+		if f.Rel != "" {
+			fmt.Printf(" F: %v", f.Rel)
+
+		}
+
+	}
+
 }

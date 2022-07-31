@@ -92,45 +92,9 @@ type Menu struct {
 	Items     []MenuItem `json:"items" rel:"menu_items"`
 }
 
-// Meta implements Model.Meta
-func (m *Menu) Meta() TableMeta {
-	return NewTableMeta("menus")
-}
-
-// BaseFieldNames implements Model.BaseFieldNames
-func (m *Menu) BaseFieldNames() []string {
-	return []string{"Id", "Label", "Items"}
-}
-
-// BeforeInsert implements Model.BeforeInsert
-func (m *Menu) BeforeInsert() {
-	//
-}
-
-// BeforeUpdate implements Model.BeforeUpdate
-func (m *Menu) BeforeUpdate() {
-	//
-}
-
-// Validate implements Model.Validate
-func (m *Menu) Validate() bool {
-	return true
-}
-
-// ToString implements Model.ToString
-func (m *Menu) ToString() string {
-	tmp := make(map[string]interface{})
-	o := reflect.ValueOf(m)
-	for _, f := range m.BaseFieldNames() {
-		tmp[f] = o.Elem().FieldByName(f)
-	}
-	return fmt.Sprintf("[Menu %v]", tmp)
-}
-
-// Collection ctrates new Collection based on Model
-func (m *Menu) Collection() Collection {
-	rfl := reflect.ValueOf(m)
-	return NewCollectionBase(rfl)
+// Name implements schema.Namer interface
+func (m *Menu) Name() string {
+	return "menus"
 }
 
 // Menu Item
@@ -145,29 +109,7 @@ type MenuItem struct {
 	Path      string    `json:"path"`
 }
 
-// Meta implements Model.Meta
-func (m *MenuItem) Meta() TableMeta {
-	return NewTableMeta("menu_items")
-}
-
-// BaseFieldNames implements Model.BaseFieldNames
-func (m *MenuItem) BaseFieldNames() []string {
-	return []string{"Id", "Label", "Path", "ParentId"}
-}
-
-// Collection ctrates new Collection based on Model
-func (m *MenuItem) Collection() Collection {
-	fmt.Println("menu Item Collection called!")
-	rfl := reflect.ValueOf(m)
-	return NewCollectionBase(rfl)
-}
-
-// ToString implements Model.ToString
-func (m *MenuItem) ToString() string {
-	tmp := make(map[string]interface{})
-	o := reflect.ValueOf(m)
-	for _, f := range m.BaseFieldNames() {
-		tmp[f] = o.Elem().FieldByName(f)
-	}
-	return fmt.Sprintf("[MenuItem %v]", tmp)
+// Name implements schema.Namer interface
+func (m *MenuItem) Name() string {
+	return "menu_items"
 }

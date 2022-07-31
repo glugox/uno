@@ -97,7 +97,7 @@ func (o *SqliteAdapter) ScanModel(m schema.Model, query *schema.Query) (mOut sch
 	o.Logger.Verbose("SQL: %s", strSql)
 
 	// Create collection , but later we will have only one item and take it back
-	col := m.Collection()
+	col := schema.NewCollection(m)
 
 	rows, err := o.DB.Query(strSql)
 	if err != nil {
@@ -146,51 +146,72 @@ func (o *SqliteAdapter) ScanRelations(sch *schema.Schema, col schema.Collection,
 
 	fmt.Printf("ScanRelations q: %s \n", query.ToSQL())
 
+	// Find colection's model type
 	dummyRfl := col.ModelReflect()
 	dummyRfl = reflect.Indirect(dummyRfl)
 	t := dummyRfl.Type()
 
-	fmt.Printf("Type %s", t)
-
+	// Get collection's model table
 	tbl, err := sch.Tables.ByStructType(t.String())
 	if err != nil {
 		return err
 	}
-	fmt.Printf("Table %s", tbl.Name)
 
+	// Loop all relations of the collection model's table
 	for _, r := range tbl.Relations.Items() {
-		fmt.Printf(" Relation: %v \n", r)
 		//relQuery := NewQuery(f.Rel, []string{"Id"})
 		relTbl, err := sch.Tables.ByName(r.Table)
 		if err != nil {
 			return err
 		}
 
-		//relModel := reflect.New(relTbl.Reflection.Type()).Interface().(Model)
-		//relCol := relModel.Collection()
+		relModel := reflect.New(relTbl.Reflection.Type()).Interface().(schema.Model)
+		relCol := schema.NewCollection(relModel)
 
-		switch r.Type {
-		case schema.OneToMany:
-			fmt.Printf("Relation table (StructType) : %s, field: %s", relTbl.StructType, r.Field)
-			//relCtx := NewEntityContext(sch.DB, relModel)
-			/*relModel, err := relCtx.All()
-			if err != nil {
-				return err
-			}*/
+		// For al of the collection items, we need to query
+		// appropriate relation items for each row:
+		for _, colItem := range col.Items() {
 
-			/*for _, relItem := range relModel {
-				fmt.Printf("Rel item :%v", relItem)
-			}*/
+			switch r.Type {
+			case schema.OneToMany:
+				// Build query for item relation
+				relItemsQuery := schema.NewQuery(relTbl.Name, relTbl.Fields)
+				// TODO:
+				//query.Where = fmt.Sprintf("%s_id =", tbl.Name)
+
+				err = o.ScanCollection(relCol, relItemsQuery)
+				if err != nil {
+					return err
+				}
+
+				// Get the reflect of the collection item that we need to set loaded relations to
+				colItemRef := reflect.ValueOf(colItem)
+				colItemRefElem := colItemRef.Elem()
+				colItemF := colItemRefElem.FieldByName(r.Name)
+
+				if colItemF.IsValid() {
+					if colItemF.CanSet() {
+						expectedTypeSlice := reflect.MakeSlice(colItemF.Type(), relCol.Size(), relCol.Size())
+
+						// Set each item from queried colllection result to the new typed slice
+						for relColIdx, relColItem := range relCol.Items() {
+							expectedTypeSlice.Index(relColIdx).Set(reflect.ValueOf(relColItem).Elem())
+						}
+						//colItemF.Set(reflect.ValueOf(typedRelCol))
+						colItemF.Set(expectedTypeSlice)
+
+					} else {
+						panic("Can not set rel field value!")
+					}
+
+				} else {
+					panic("rel field value not valid!")
+				}
+
+			}
 		}
 
 	}
-
-	// Do the scanning for all of our rows
-	/*err = Scan(rows, col, query)
-	if err != nil {
-		o.Logger.Error("Could not scan Rows into Model. Err: %s", err)
-		return
-	}*/
 
 	return nil
 }

@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
+
+	"github.com/glugox/uno/pkg/utils"
 )
 
 // Table is the DB representation of our struct
@@ -20,26 +22,6 @@ type Table struct {
 }
 
 // NewTable creates new instance of Table
-// func NewTable(path, name, structName string, structType interface{}, o Model) *Table {
-// 	return &Table{
-// 		// e.g. "github.com/glugox/uno/pkg"
-// 		Path: path,
-// 		// e.g. "user"
-// 		Name: name,
-// 		// e.g. "User"
-// 		StructName: structName,
-// 		// e.g. "uno.User"
-// 		StructType: structType.(string),
-// 		Fields:     Fields(o),
-// 		Relations:  NewRelationCol(),
-
-// 		// Reflection
-// 		Reflection: reflect.Value,
-// 	}
-// }
-
-// NewTable(t.PkgPath(), m.Meta().Name, t.Name(), rVal.Type().String(), m)
-
 func NewTable(reflectVal reflect.Value, m Model) *Table {
 
 	t := reflectVal.Type()
@@ -48,7 +30,7 @@ func NewTable(reflectVal reflect.Value, m Model) *Table {
 		// e.g. "github.com/glugox/uno/pkg"
 		Path: t.PkgPath(),
 		// e.g. "user"
-		Name: m.Meta().Name,
+		Name: TableName(m),
 		// e.g. "User"
 		StructName: t.Name(),
 		// e.g. "uno.User"
@@ -138,4 +120,21 @@ func (col *TableCol) MarshalJSON() ([]byte, error) {
 	m := make(map[string]interface{})
 	m["items"] = col.items
 	return json.Marshal(m)
+}
+
+// TableName tages a struct model (e.g. UserRole) and
+// returns the snake case based on that struct name (user_role)
+func TableName(m Model) string {
+
+	if n, ok := m.(Namer); ok {
+		return n.Name()
+	}
+
+	rVal := reflect.ValueOf(m)
+	return utils.ToSnakeCase(rVal.Type().Elem().Name())
+}
+
+// ToString retruns string representation of the passed model
+func ToString(m Model) string {
+	return "[" + TableName(m) + "]"
 }

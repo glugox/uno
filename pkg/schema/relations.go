@@ -1,7 +1,6 @@
 package schema
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 )
@@ -70,19 +69,4 @@ func (col *RelationCol) MarshalJSON() ([]byte, error) {
 	m := make(map[string]interface{})
 	m["items"] = col.items
 	return json.Marshal(m)
-}
-
-func ScanRelations(rows *sql.Rows, col Collection, query *Query) {
-
-	fmt.Printf("ScanRelations : %s \n", col.ModelReflect().Type())
-	fields := Fields(col.CreateModel().Interface().(Model))
-
-	for _, f := range fields.Items() {
-		if f.Rel != "" {
-			fmt.Printf(" F: %v", f.Rel)
-
-		}
-
-	}
-
 }

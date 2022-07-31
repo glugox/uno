@@ -1,6 +1,8 @@
 package db
 
 import (
+	"fmt"
+
 	"github.com/glugox/uno/pkg/schema"
 )
 
@@ -25,7 +27,7 @@ func NewEntitySession(db *DB, model schema.Model) *Session {
 
 // All returns all models from the database
 func (s *Session) All() (schema.Collection, error) {
-	query := schema.NewQuery(s.model.Meta().Name, schema.QueryFields(s.model, s.model.BaseFieldNames()))
+	query := schema.NewQuery(schema.TableName(s.model), schema.QueryFields(s.model, schema.BaseFieldNames(s.model)))
 	col, err := dbGet(s, query)
 	if err != nil {
 		return nil, err
@@ -37,8 +39,7 @@ func dbGet(s *Session, query *schema.Query) (schema.Collection, error) {
 	// Create empty collection for our models
 	db := s.DB
 	m := s.model
-	col := m.Collection()
-
+	col := schema.NewCollection(m)
 	// Fill col collection with records from DB
 	err := db.Adapter.ScanCollection(col, query)
 	if err != nil {
@@ -47,6 +48,8 @@ func dbGet(s *Session, query *schema.Query) (schema.Collection, error) {
 
 	// Fill col collection with records from DB
 	err = db.Adapter.ScanRelations(db.Schema, col, query)
+	fmt.Println("Scanned collection: ")
+	fmt.Printf("%+v \n", col)
 	if err != nil {
 		return nil, err
 	}

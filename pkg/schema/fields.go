@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/glugox/uno/pkg/utils"
 	"github.com/google/uuid"
 	"golang.org/x/exp/slices"
 )
@@ -76,9 +77,9 @@ func (col *FieldCol) ByName(name string) (*Field, error) {
 func (col *FieldCol) StringNames() []string {
 	names := []string{}
 	for _, f := range col.items {
-		if f.Rel == "" {
-			names = append(names, f.Name)
-		}
+		//if f.Rel == "" {
+		names = append(names, f.Name)
+		//}
 	}
 	return names
 }
@@ -165,9 +166,9 @@ func Fields(m Model) *FieldCol {
 			// ... use json tag name (split e.g. "label,omitempty")
 			dbFN = strings.Split(fRefl.Tag.Get("json"), ",")[0]
 		}
-		if dbFN == "" {
+		if dbFN == "" || dbFN == "-" {
 			// Set database field name as original struct name for the start
-			dbFN = fName
+			dbFN = utils.ToSnakeCase(fName)
 		}
 
 		// Check for relations:
@@ -190,4 +191,12 @@ func Fields(m Model) *FieldCol {
 func QueryFields(m Model, qFields []string) *FieldCol {
 	fCol := Fields(m)
 	return fCol.Filter(qFields)
+}
+
+// BaseFieldNames returns slice of strings that represents all
+// fields that should be loaded from database, when we are not specific
+// about what to load (default)
+func BaseFieldNames(m Model) []string {
+	// By default get all (*) TODO?
+	return Fields(m).StringNames()
 }
