@@ -27,6 +27,8 @@ func (r *Router) RegisterRoutes(routes []*Route) {
 }
 
 func (rtr *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	fmt.Printf("SERVE! n: %d", len(rtr.Routes))
 
 	var allow []string
@@ -87,4 +89,10 @@ func match(path, pattern string, vars ...interface{}) bool {
 		}
 	}
 	return path == "" && pattern == ""
+}
+
+// RequestParam returns string value variable from route path pattern by index
+func RequestParam(r *http.Request, index int) string {
+	fields := r.Context().Value(ctxKey{}).([]string)
+	return fields[index]
 }

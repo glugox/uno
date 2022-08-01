@@ -9,6 +9,7 @@ import (
 type Session struct {
 	DB    *DB
 	model schema.Model
+	query *schema.Query
 }
 
 func NewSession(db *DB, model schema.Model) *Session {
@@ -33,6 +34,34 @@ func (s *Session) All() (schema.Collection, error) {
 		return nil, err
 	}
 	return col, nil
+}
+
+// Where returns back the same session object
+// and assigns query with passed where filter
+func (s *Session) Where(key string, val string) *Session {
+	if s.query == nil {
+		s.query = schema.NewQuery(schema.TableName(s.model), schema.QueryFields(s.model, schema.BaseFieldNames(s.model)))
+		s.query.AddWhere(key, val)
+	}
+	return s
+}
+
+// All returns all models from the database
+func (s *Session) Get() (schema.Collection, error) {
+	col, err := dbGet(s, s.query)
+	if err != nil {
+		return nil, err
+	}
+	return col, nil
+}
+
+// All returns all models from the database
+func (s *Session) First() (schema.Model, error) {
+	col, err := dbGet(s, s.query)
+	if err != nil {
+		return nil, err
+	}
+	return col.First(), nil
 }
 
 func dbGet(s *Session, query *schema.Query) (schema.Collection, error) {

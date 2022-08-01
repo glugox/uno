@@ -28,12 +28,14 @@ func Routes() []*server.Route {
 			uno.Get("/menu/([^/]+)/items/([0-9]+)/update", MenusItemsUpdate),
 		*/
 
-		uno.Get("/menu", MenusGet),
-		uno.Get("/menu-items", MenusItemsGet),
+		uno.Get("/menus", MenusGet),
+		uno.Get("/menus/([^/]+)", MenusItemGet),
+		uno.Get("/menus-items", MenusItemsGet),
 	}
 	return routes
 }
 
+// MenusGet returns list of all our menus
 func MenusGet(w http.ResponseWriter, r *http.Request) {
 	uno, err := uno.Instance()
 	if err != nil {
@@ -48,6 +50,29 @@ func MenusGet(w http.ResponseWriter, r *http.Request) {
 
 	// Convert our data provider to json
 	res, err := dp.Marshal()
+	if err != nil {
+		panic(err)
+	}
+
+	w.Write(res)
+}
+
+// MenusGet returns one menu item
+func MenusItemGet(w http.ResponseWriter, r *http.Request) {
+	menuName := server.RequestParam(r, 0)
+	uno, err := uno.Instance()
+	if err != nil {
+		panic(err)
+	}
+
+	// dp := uno.Entity().New(&User{}).Save()
+	dp, err := uno.Entity(&schema.Menu{}).Where("Id", menuName).First()
+	if err != nil {
+		panic(err)
+	}
+
+	// Convert our data provider to json
+	res, err := schema.MarshalOnlyModelDefeult(dp)
 	if err != nil {
 		panic(err)
 	}

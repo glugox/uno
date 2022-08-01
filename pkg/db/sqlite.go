@@ -168,26 +168,35 @@ func (o *SqliteAdapter) ScanRelations(sch *schema.Schema, col schema.Collection,
 		relModel := reflect.New(relTbl.Reflection.Type()).Interface().(schema.Model)
 		relCol := schema.NewCollection(relModel)
 
+		var itemId string
+
 		// For al of the collection items, we need to query
 		// appropriate relation items for each row:
 		for _, colItem := range col.Items() {
 
 			switch r.Type {
 			case schema.OneToMany:
+
+				// Get the reflect of the collection item that we need to set loaded relations to
+				colItemRef := reflect.ValueOf(colItem)
+
+				colItemRefElem := colItemRef.Elem()
+				colItemF := colItemRefElem.FieldByName(r.Name)
+
+				// Get primary field value (id)
+				colItemPrimaryIdF := colItemRefElem.FieldByName("Id")
+				itemId = colItemPrimaryIdF.String()
+
 				// Build query for item relation
 				relItemsQuery := schema.NewQuery(relTbl.Name, relTbl.Fields)
-				// TODO:
-				//query.Where = fmt.Sprintf("%s_id =", tbl.Name)
+				relItemsQuery.AddWhere(tbl.ForeignKeyFN, itemId)
+
+				fmt.Printf("Rel: %+v", r)
 
 				err = o.ScanCollection(relCol, relItemsQuery)
 				if err != nil {
 					return err
 				}
-
-				// Get the reflect of the collection item that we need to set loaded relations to
-				colItemRef := reflect.ValueOf(colItem)
-				colItemRefElem := colItemRef.Elem()
-				colItemF := colItemRefElem.FieldByName(r.Name)
 
 				if colItemF.IsValid() {
 					if colItemF.CanSet() {

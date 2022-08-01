@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
+	"strings"
 
 	"github.com/glugox/uno/pkg/utils"
 )
@@ -17,8 +18,14 @@ type Table struct {
 	StructName string
 	StructType string
 	Fields     *FieldCol
-	Relations  *RelationCol
-	Reflection reflect.Value
+	// Foreign Key Field Name is used in relations.
+	// When we want to reference this table from another. The another
+	// table should have this field name. E.g. this table is menus, than
+	// in the menu_items table we shoud have menu_id field
+	// that references to this table
+	ForeignKeyFN string
+	Relations    *RelationCol
+	Reflection   reflect.Value
 }
 
 // NewTable creates new instance of Table
@@ -34,9 +41,10 @@ func NewTable(reflectVal reflect.Value, m Model) *Table {
 		// e.g. "User"
 		StructName: t.Name(),
 		// e.g. "uno.User"
-		StructType: reflectVal.Type().String(),
-		Fields:     Fields(m),
-		Relations:  NewRelationCol(),
+		StructType:   reflectVal.Type().String(),
+		Fields:       Fields(m),
+		ForeignKeyFN: fmt.Sprintf("%s_id", strings.ToLower(t.Name())),
+		Relations:    NewRelationCol(),
 
 		// Reflection
 		Reflection: reflectVal,

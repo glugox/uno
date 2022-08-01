@@ -20,14 +20,7 @@ import NavBar from "../components/NavBar.vue"
         </aside>
         <div className="page-wrapper">
             <div className="container-xl">
-                <div className="page-header d-print-none">
-                    <div className="row g-2 align-items-center">
-                        <div className="col">
-                            <div className="page-pretitle">overview</div>
-                            <h2 className="page-title">Dashboard</h2>
-                        </div>
-                    </div>
-                </div>
+                <slot />
             </div>
         </div>
     </div>

@@ -23,6 +23,7 @@ type Collection interface {
 	Size() int
 	// Items
 	Items() []Model
+	First() Model
 	// Marshall to json only the wields we have
 	Marshal() ([]byte, error)
 
@@ -79,12 +80,12 @@ func (c *CollectionBase) AppendValue(val reflect.Value) {
 
 func (c *CollectionBase) Marshal() ([]byte, error) {
 
-	fNames := []string{}
+	fCol := NewFieldCol()
 	if c.Size() > 0 {
-		fNames = BaseFieldNames(c.items[0])
+		fCol = Fields(c.items[0])
 	}
-	fmt.Printf("Fiald names to marshal: %s \n", fNames)
-	return MarshalOnlyCollection(c, fNames)
+	fmt.Printf("Fiald names to marshal: %+v \n", fCol)
+	return MarshalOnlyCollection(c, fCol)
 }
 
 /*func (c *CollectionBase) ToReflection(r reflect.Value) Collection {
@@ -112,4 +113,13 @@ func (c *CollectionBase) Size() int {
 // Items
 func (c *CollectionBase) Items() []Model {
 	return c.items
+}
+
+// First
+func (c *CollectionBase) First() Model {
+	if len(c.items) > 0 {
+		return c.items[0]
+	}
+
+	return nil
 }

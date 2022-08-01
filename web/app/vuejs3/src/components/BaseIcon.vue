@@ -28,9 +28,9 @@ export default {
         name: {
             type: String,
             required: true,
-            validator(value) {
+            /*validator(value) {
                 return Object.prototype.hasOwnProperty.call(icons, value)
-            }
+            }*/
         }
     },
 

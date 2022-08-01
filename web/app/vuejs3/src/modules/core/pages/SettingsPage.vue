@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { mapActions, storeToRefs } from "pinia";
 import { onMounted, ref } from "vue";
-import AppLayout from "@/layouts/AppLayout.vue";
 import { useCounterStore } from "@/store/modules/example";
 import { usePokemonStore } from "@/store/modules/pokemon";
 
-const welcome = ref("Boilerplate Vue 3 + Vite + TypeScript + Pinia");
+import PageHeader from "@/components/PageHeader.vue";
+
+const welcome = ref("OK");
 
 // Instance to store
 const main = useCounterStore();
@@ -22,15 +23,12 @@ onMounted(() => pokemon.getPokemons());
 </script>
 
 <template>
-  <AppLayout>
-    <h1>{{ welcome }}</h1>
-    <Hello msg="I'm a example component with composition API" />
-    <h3>Counter using Pinia Store</h3>
-    <p>Counter: {{ counter }}</p>
-    <p>Double counter: {{ doubleCounter }}</p>
-    <button @click="increment">Increment</button>
-    <button @click="reset">Reset store</button>
-
-    <div v-for="(poke, i) of pokemonsName" :key="i">{{ poke }}</div>
-  </AppLayout>
+  <PageHeader title="Settings" />
+  <h1>{{ welcome }}</h1>
+  <h3>Counter using Pinia Store</h3>
+  <p>Counter: {{ counter }}</p>
+  <p>Double counter: {{ doubleCounter }}</p>
+  <button @click="increment">Increment</button>
+  <button @click="reset">Reset store</button>
+  <div v-for="(poke, i) of pokemonsName" :key="i">{{ poke }}</div>
 </template>

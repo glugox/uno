@@ -1,6 +1,10 @@
 <script setup>
-import { navTree } from "../store/menu"
+import { useMenusStore } from '../store/modules/menus'
 import NavBarItem from "./NavBarItem.vue";
+
+const menus = useMenusStore();
+menus.getAdminMenu();
+
 </script>
 <template>
     <div class="navbar-nav flex-row d-lg-none">
@@ -314,13 +318,9 @@ import NavBarItem from "./NavBarItem.vue";
     </div>
     <div id="navbar-menu" class="collapse navbar-collapse">
         <ul class="navbar-nav pt-lg-3">
-
-
-            <template v-for="navItem in navTree.nodes" :key="navItem.id">
+            <template v-for="navItem in menus.admin?.items" :key="navItem.id">
                 <NavBarItem :item="navItem" />
             </template>
-
-
         </ul>
     </div>
 </template>

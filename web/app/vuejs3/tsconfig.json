@@ -15,7 +15,10 @@
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
     "types": ["vite/client", "@types/jest"],
     "plugins": [{ "name": "@vuedx/typescript-plugin-vue" }],
-    "paths": { "@/*": ["src/*"] }
+    "paths": { "@/*": ["src/*"] },
+    "allowJs": true,
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["error"]
   },
   "include": [
     "src/**/*.ts",
