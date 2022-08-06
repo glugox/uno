@@ -83,6 +83,18 @@ func (u *Uno) RegisterRoutes(routes []*server.Route) {
 	u.Server.RegisterRoutes(routes)
 }
 
+// RegisterModels allows custom models registering that will be
+// part of complete db Schema along with core models.
+func (u *Uno) RegisterModels(models []schema.Model) {
+	u.DB.RegisterModels(models)
+}
+
+// RegisterSeeder keeps track aff all handler functions that we
+// need to call with DB object, so they can all seed thir parts to the DB
+func (u *Uno) RegisterSeeder(f db.DBSeeder) {
+	u.DB.RegisterSeeder(f)
+}
+
 // Run executes the applications
 func (u *Uno) Run() {
 	u.Server.Run()

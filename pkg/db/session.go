@@ -64,6 +64,11 @@ func (s *Session) First() (schema.Model, error) {
 	return col.First(), nil
 }
 
+// Save inserts or updates model item into the database
+func (s *Session) Save() error {
+	return nil
+}
+
 func dbGet(s *Session, query *schema.Query) (schema.Collection, error) {
 	// Create empty collection for our models
 	db := s.DB
@@ -74,6 +79,8 @@ func dbGet(s *Session, query *schema.Query) (schema.Collection, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	s.DB.Logger.Info("Scaned collection with size: %d", col.Size())
 
 	// Fill col collection with records from DB
 	err = db.Adapter.ScanRelations(db.Schema, col, query)

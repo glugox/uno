@@ -17,7 +17,7 @@ export const useMenusStore = defineStore("menus", {
   actions: {
     async getAdminMenu() {
       return await api
-        .get("http://localhost:9090/menus/25A9B312D0440797C2995B1E3784C488")
+        .get("http://localhost:9090/menus/1")
         .then((menu) => {
           this.adminMenu = menu.data;
         });

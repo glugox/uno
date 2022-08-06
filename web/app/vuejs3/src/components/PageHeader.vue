@@ -10,12 +10,33 @@ const pathEnsured = computed(() => (!props.path ? props.title : props.path))
 
 </script>
 <template>
-    <div className="page-header d-print-none">
-        <div className="row g-2 align-items-center">
-            <div className="col">
-                <div className="page-pretitle">{{ pathEnsured }}</div>
-                <h2 className="page-title">{{ title }}</h2>
+    <div class="page-header mb-3">
+        <div class="row align-items-center mw-100">
+            <div class="col">
+                <div class="mb-1">
+                    <ol class="breadcrumb" aria-label="breadcrumbs">
+                        <li class="breadcrumb-item">
+                            <a href="#">Administration</a>
+                        </li>
+
+                        <li class="breadcrumb-item active" aria-current="page">
+                            <a href="#">{{ pathEnsured }}</a>
+                        </li>
+                    </ol>
+                </div>
+                <h2 class="page-title">
+                    <span class="text-truncate">{{ title }}</span>
+                </h2>
+            </div>
+            <div class="col-auto">
+                <div class="btn-list">
+                    <a href="#" class="btn btn-primary"> Save Settings </a>
+                </div>
             </div>
         </div>
     </div>
+
 </template>
+
+
+

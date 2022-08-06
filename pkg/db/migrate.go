@@ -176,6 +176,7 @@ func (o *Migrate) Files() ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
+	o.DB.Logger.Debug("Migration files from: %s", dirFull)
 	files, err := filepath.Glob(path.Join(dirFull, "*.sql"))
 	if err != nil {
 		return nil, err

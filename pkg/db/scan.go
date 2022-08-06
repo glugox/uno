@@ -93,9 +93,12 @@ func setReflValue(rType reflect.Type, rValF reflect.Value, item interface{}) {
 	if rValF.CanSet() {
 		if item != nil {
 			switch rValF.Kind() {
-			// String
+			// Int
 			case reflect.String:
 				rValF.SetString(item.(string))
+			// String
+			case reflect.Int64:
+				rValF.SetInt(item.(int64))
 			// Float64
 			case reflect.Float32, reflect.Float64:
 				rValF.SetFloat(item.(float64))
@@ -110,7 +113,7 @@ func setReflValue(rType reflect.Type, rValF reflect.Value, item interface{}) {
 				rValF.Set(reflect.ValueOf(item))
 			// default
 			default:
-				fmt.Println(rValF.Kind(), " ? >> ", reflect.ValueOf(item).Kind())
+				fmt.Println("Unknow type in scanner: ", rValF.Kind(), " >> ", reflect.ValueOf(item).Kind())
 			}
 		}
 	}

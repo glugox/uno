@@ -36,7 +36,8 @@ const slugify = (s: string) => s.toLowerCase().replace(/\s+/g, '-').replace(/[^\
 
 </script>
 <template>
-    <li class="nav-item"
+    <li
+        class="nav-item"
         :class="{ dropdown: item.children?.length > 0, active: isActive }">
         <a
            :class="'nav-link' + (item.children?.length > 0 ? ' dropdown-toggle' : '')"

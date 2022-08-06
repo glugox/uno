@@ -103,7 +103,7 @@ type MenuItem struct {
 	Id        ObjectId  `json:"id"`
 	CreatedAt time.Time `json:"-"`
 	UpdatedAt time.Time `json:"-"`
-	MenuId    ObjectId  `json:"menu_id"`
+	MenuId    ObjectId  `json:"menus_id"`
 	ParentId  ObjectId  `json:"parent_id"`
 	Label     string    `json:"label"`
 	Path      string    `json:"path"`

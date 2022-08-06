@@ -49,7 +49,7 @@ func (ddl *DDL) Configure(models ...Model) error {
 
 		// Parse struct name ( CamelCase ) => table name as snake_case
 		s := fmt.Sprintf("%s.%s", t.PkgPath(), t.Name())
-		fmt.Printf("DDL: Adding sruct [%s] ... \n", s)
+		ddl.Schema.Logger.Debug("DDL: Adding sruct [%s] ...", s)
 
 		// Create and store new table
 		//tbl := NewTable(t.PkgPath(), m.Meta().Name, t.Name(), rVal.Type().String(), m)
@@ -62,7 +62,7 @@ func (ddl *DDL) Configure(models ...Model) error {
 		return err
 	}
 
-	ddl.Schema.Print()
+	//ddl.Schema.Print()
 	return nil
 
 }
@@ -100,14 +100,14 @@ func (s *Schema) Print() {
 // The function return (false, nil) if it is not a relation
 func (s *Schema) parseRelations() error {
 
-	fmt.Printf("parseRelations of %d tables\n", s.Tables.Size())
+	s.Logger.Debug("parseRelations of %d tables", s.Tables.Size())
 
 	// LOOP 2: Crete relations in 2nd loop
 	tables := s.Tables.Items()
 	for _, t := range tables {
-		fmt.Printf("Table: %s (%s) \n", t.Name, t.StructName)
+		//fmt.Printf("Table: %s (%s) \n", t.Name, t.StructName)
 		for _, f := range t.Fields.Items() {
-			fmt.Printf(" - %s (%s) \n", f.Name, f.Type)
+			//fmt.Printf(" - %s (%s) \n", f.Name, f.Type)
 
 			if strings.HasPrefix(f.Type, "[]") {
 				rel := NewRelation(f.Name)
@@ -118,7 +118,6 @@ func (s *Schema) parseRelations() error {
 				if err != nil {
 					return err
 				}
-				fmt.Printf("refFType: %s \n", refFType)
 				rel.Type = OneToMany
 				rel.Table = fefTable.Name
 				rel.Field = "id"

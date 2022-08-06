@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
-	"strings"
 
 	"github.com/glugox/uno/pkg/utils"
 )
@@ -32,18 +31,19 @@ type Table struct {
 func NewTable(reflectVal reflect.Value, m Model) *Table {
 
 	t := reflectVal.Type()
+	tblName := TableName(m)
 
 	return &Table{
 		// e.g. "github.com/glugox/uno/pkg"
 		Path: t.PkgPath(),
 		// e.g. "user"
-		Name: TableName(m),
+		Name: tblName,
 		// e.g. "User"
 		StructName: t.Name(),
 		// e.g. "uno.User"
 		StructType:   reflectVal.Type().String(),
 		Fields:       Fields(m),
-		ForeignKeyFN: fmt.Sprintf("%s_id", strings.ToLower(t.Name())),
+		ForeignKeyFN: fmt.Sprintf("%s_id", tblName),
 		Relations:    NewRelationCol(),
 
 		// Reflection

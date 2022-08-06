@@ -14,7 +14,13 @@ type DB struct {
 	Logger   log.Logger
 	Adapter  Adapter
 	Schema   *schema.Schema
+	// Models is the holder for all models that we want to configue
+	// along with default code models that are configured automativally
+	Models  []schema.Model
+	Seeders []DBSeeder
 }
+
+type DBSeeder func(*DB) error
 
 // NewDB returns new DB instance
 func NewDB() *DB {
@@ -50,6 +56,18 @@ func DBWithConfig(cfg *config.DBConfig) (*DB, error) {
 	return db, nil
 }
 
+// RegisterModels allows custom models registering that will be
+// part of complete db Schema along with core models.
+func (o *DB) RegisterModels(models []schema.Model) {
+	o.Models = append(o.Models, models...)
+}
+
+// RegisterSeeder keeps track aff all handler functions that we
+// need to call with DB object, so they can all seed thir parts to the DB
+func (o *DB) RegisterSeeder(f DBSeeder) {
+	o.Seeders = append(o.Seeders, f)
+}
+
 // Init checks needed data and tries to connect to database
 // also, tries to migrate any migrations available
 func (o *DB) Init() error {
@@ -64,8 +82,22 @@ func (o *DB) Init() error {
 	}
 
 	ddl := schema.NewDDL()
-	ddl.Configure(&schema.User{}, &schema.Role{}, &schema.Menu{}, &schema.MenuItem{})
+	mds := []schema.Model{&schema.User{}, &schema.Role{}, &schema.Menu{}, &schema.MenuItem{}}
+	mds = append(mds, o.Models...)
+	ddl.Configure(mds...)
 	o.Schema = ddl.Read()
 
-	return o.Migrator.Init()
+	err = o.Migrator.Init()
+	if err != nil {
+		return err
+	}
+
+	for _, seedH := range o.Seeders {
+		err = seedH(o)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

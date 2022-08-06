@@ -1,0 +1,43 @@
+{
+    "created_at": "2022-07-24T13:28:56Z",
+    "id": 1,
+    "items": [
+        {
+            "id": 1,
+            "menus_id": 1,
+            "parent_id": 0,
+            "label": "Home",
+            "path": "home"
+        },
+        {
+            "id": 2,
+            "menus_id": 1,
+            "parent_id": 0,
+            "label": "Users",
+            "path": "users"
+        },
+        {
+            "id": 3,
+            "menus_id": 1,
+            "parent_id": 0,
+            "label": "Contacts",
+            "path": "contacts"
+        },
+        {
+            "id": 4,
+            "menus_id": 1,
+            "parent_id": 0,
+            "label": "Accounts",
+            "path": "accounts"
+        },
+        {
+            "id": 5,
+            "menus_id": 1,
+            "parent_id": 0,
+            "label": "Settings",
+            "path": "settings"
+        }
+    ],
+    "label": "Admin",
+    "updated_at": "2022-07-24T13:28:56Z"
+}

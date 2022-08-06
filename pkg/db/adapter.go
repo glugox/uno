@@ -50,8 +50,11 @@ func AdapterFactory(name string) (Adapter, error) {
 	// Sqlite
 	case schema.DBAdapterSqlite:
 		return NewSqliteAdapter(), nil
+		// Sqlite
+	case schema.DBAdapterMySql:
+		return NewMySqlAdapter(), nil
 	// Mysql
 	default:
-		return nil, fmt.Errorf("the adapter does not exist")
+		return nil, fmt.Errorf("the adapter %q does not exist", name)
 	}
 }

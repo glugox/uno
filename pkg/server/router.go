@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -21,15 +20,12 @@ func NewRouter() *Router {
 type ctxKey struct{}
 
 func (r *Router) RegisterRoutes(routes []*Route) {
-	fmt.Printf("RegisterRoutes! n: %d", len(r.Routes))
 	r.Routes = append(r.Routes, routes...)
-	fmt.Printf("RegisterRoutes 2 n: %d", len(r.Routes))
 }
 
+// ServeHTTP implemenths http.Handler interface
 func (rtr *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	fmt.Printf("SERVE! n: %d", len(rtr.Routes))
 
 	var allow []string
 

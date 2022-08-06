@@ -1,9 +1,10 @@
 <script setup>
+import { onMounted } from 'vue'
 import { useMenusStore } from '../store/modules/menus'
 import NavBarItem from "./NavBarItem.vue";
 
 const menus = useMenusStore();
-menus.getAdminMenu();
+onMounted(() => menus.getAdminMenu());
 
 </script>
 <template>

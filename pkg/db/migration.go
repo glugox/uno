@@ -54,7 +54,6 @@ func NewMigration(mm *Migrate, name string) *Migration {
 	name = strings.Trim(name, ext)
 
 	return &Migration{
-		Id:       schema.NewObjectId(),
 		Name:     fmt.Sprintf("%s_%s%s", ts, utils.ToSnakeCase(name), ext),
 		OrigName: origName,
 		Migrate:  mm,
@@ -67,7 +66,6 @@ func NewMigration(mm *Migrate, name string) *Migration {
 // get a Migration from e.g. "200000000000_create_users_table.sql"
 func FromName(mm *Migrate, name string) *Migration {
 	m := &Migration{
-		Id:       schema.NewObjectId(),
 		Name:     name,
 		OrigName: name,
 		Migrate:  mm,

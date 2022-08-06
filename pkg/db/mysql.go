@@ -5,41 +5,42 @@ import (
 
 	"github.com/glugox/uno/pkg/log"
 	"github.com/glugox/uno/pkg/schema"
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/go-sql-driver/mysql"
 )
 
-// SqliteAdapter
-type SqliteAdapter struct {
+// MySqlAdapter
+type MySqlAdapter struct {
 	Name   string
 	Base   *BaseAdapter
 	DB     *sql.DB
 	Logger log.Logger
 }
 
-// NewSqliteAdapter
-func NewSqliteAdapter() (a *SqliteAdapter) {
+// NewMySqlAdapter
+func NewMySqlAdapter() (a *MySqlAdapter) {
 	logger := log.DefaultLogFactory().NewLogger()
-	a = &SqliteAdapter{
-		Name:   schema.DBAdapterSqlite,
+	a = &MySqlAdapter{
+		Name:   schema.DBAdapterMySql,
 		Logger: logger,
-		Base:   NewBaseAdapter(schema.DBAdapterSqlite),
+		Base:   NewBaseAdapter(schema.DBAdapterMySql),
 	}
-	a.Logger.Debug("created new SqliteAdapter")
+
+	a.Logger.Debug("created new MySqlAdapter")
 	return
 }
 
 // Type returns the type name of the adapter: "mysql", "sqlite", etc
-func (o *SqliteAdapter) GetMigrationSQL() string {
-	return `CREATE TABLE IF NOT EXISTS migrations (id INTEGER PRIMARY KEY, name  TEXT, batch INTEGER);`
+func (o *MySqlAdapter) GetMigrationSQL() string {
+	return `CREATE TABLE IF NOT EXISTS migrations (id INT NOT NULL AUTO_INCREMENT, name  VARCHAR(255), batch INT, PRIMARY KEY(id));`
 }
 
 // Type returns the type name of the adapter: "mysql", "sqlite", etc
-func (o *SqliteAdapter) Type() string {
+func (o *MySqlAdapter) Type() string {
 	return o.Name
 }
 
 // Open implements Adatpter interface
-func (o *SqliteAdapter) Open(dsn string) error {
+func (o *MySqlAdapter) Open(dsn string) error {
 	err := o.Base.Open(dsn)
 	if err != nil {
 		return err
@@ -50,41 +51,43 @@ func (o *SqliteAdapter) Open(dsn string) error {
 
 // Exec implements Adatpter interface.
 // It only executes sql query
-func (o *SqliteAdapter) Exec(q string, bind ...any) (err error) {
+func (o *MySqlAdapter) Exec(q string, bind ...any) (err error) {
 	return o.Base.Exec(q, bind...)
 }
 
 // Rows implements Adatpter interface.
 // It returns rows typical for SELECT statement
-func (o *SqliteAdapter) Rows(q string, bind ...any) (err error) {
+func (o *MySqlAdapter) Rows(q string, bind ...any) (err error) {
 	return o.Base.Rows(q, bind...)
 }
 
 // ScanModel implements db.Adapter.ScanModel
 // While ScanCollection scans into the passed collection, this fnction returns
 // new model instance
-func (o *SqliteAdapter) ScanModel(m schema.Model, query *schema.Query) (mOut schema.Model, err error) {
+func (o *MySqlAdapter) ScanModel(m schema.Model, query *schema.Query) (mOut schema.Model, err error) {
 	return o.Base.ScanModel(m, query)
 }
 
 // ScanRows implements db.Adapter.ScanRows
-func (o *SqliteAdapter) ScanCollection(col schema.Collection, query *schema.Query) (err error) {
+func (o *MySqlAdapter) ScanCollection(col schema.Collection, query *schema.Query) (err error) {
 	return o.Base.ScanCollection(col, query)
 }
 
 // ScanRows implements db.Adapter.ScanRelations
-func (o *SqliteAdapter) ScanRelations(sch *schema.Schema, col schema.Collection, query *schema.Query) (err error) {
+func (o *MySqlAdapter) ScanRelations(sch *schema.Schema, col schema.Collection, query *schema.Query) (err error) {
 	return o.Base.ScanRelations(sch, col, query)
 }
 
 // Values implements Adatpter interface. It returns a slice of values
 // defined in SQL. (SELECT name FROM users) will return slice of all user names
 // TODO: Generics!
-func (o *SqliteAdapter) Values(q string, bind ...any) (ss []string, err error) {
+func (o *MySqlAdapter) Values(q string, bind ...any) (ss []string, err error) {
 	return o.Base.Values(q, bind...)
 }
 
 // // InitMigrations creates the migrations table in the DB
-func (o *SqliteAdapter) InitMigrations(table string) error {
-	return o.Base.InitMigrations(table)
+func (o *MySqlAdapter) InitMigrations(table string) error {
+	// Since default one is sqlite, here we don't call base in order
+	//  to get own (mysql) migration sql
+	return o.Exec(o.GetMigrationSQL())
 }

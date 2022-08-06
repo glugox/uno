@@ -7,17 +7,10 @@ import (
 	"strings"
 
 	"github.com/glugox/uno/pkg/utils"
-	"github.com/google/uuid"
 	"golang.org/x/exp/slices"
 )
 
-type ObjectId string
-
-// NewObjectId creates new ObjectId for usage,
-// usually when we create new instance model
-func NewObjectId() ObjectId {
-	return ObjectId(uuid.New().String())
-}
+type ObjectId int64
 
 // Field represents metadata about
 // one fild in our model struct
@@ -144,6 +137,9 @@ func (col *FieldCol) MarshalJSON() ([]byte, error) {
 // and builds a nice FieldCol that is easier to use
 func Fields(m Model) *FieldCol {
 
+	if m == nil {
+		panic("can not find fields of nil model")
+	}
 	// Reflection Value of our  model
 	refl := reflect.ValueOf(m).Elem()
 	// Number of fields

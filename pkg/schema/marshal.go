@@ -24,6 +24,9 @@ func MarshalOnlyModel(m Model, fCol *FieldCol) ([]byte, error) {
 }
 
 func MarshalOnlyModelDefeult(m Model) ([]byte, error) {
+	if m == nil {
+		return json.Marshal(nil)
+	}
 	return MarshalOnlyModel(m, Fields(m))
 }
 

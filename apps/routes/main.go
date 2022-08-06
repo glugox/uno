@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 
 	uno "github.com/glugox/uno/pkg"
@@ -18,7 +17,6 @@ func main() {
 
 	uno.Init()
 	uno.RegisterRoutes(Routes())
-	fmt.Println(uno.Config.App.Key)
 	uno.Run()
 }
 
@@ -57,7 +55,8 @@ func MenusGet(w http.ResponseWriter, r *http.Request) {
 	w.Write(res)
 }
 
-// MenusGet returns one menu item
+// MenusGet returns one menu ( not menu item as child of menu )
+// e.g. Admin Menu, Settings Menu
 func MenusItemGet(w http.ResponseWriter, r *http.Request) {
 	menuName := server.RequestParam(r, 0)
 	uno, err := uno.Instance()
@@ -66,7 +65,7 @@ func MenusItemGet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// dp := uno.Entity().New(&User{}).Save()
-	dp, err := uno.Entity(&schema.Menu{}).Where("Id", menuName).First()
+	dp, err := uno.Entity(&schema.Menu{}).Where("id", menuName).First()
 	if err != nil {
 		panic(err)
 	}
