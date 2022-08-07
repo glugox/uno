@@ -37,15 +37,11 @@ func CRMSeed(db *db.DB) error {
 		return err
 	}
 
-	err = app.Entity(menu).Save()
+	// Save the menu model along with its children (relations)
+	err = app.Entity(&menu).Save()
 	if err != nil {
 		return err
 	}
-	// dp := uno.Entity().New(&User{}).Save()
-	/*err := app.Entity(&schema.Menu{}).Insert()
-	if err != nil {
-		panic(err)
-	}*/
 
 	return nil
 }

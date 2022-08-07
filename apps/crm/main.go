@@ -2,7 +2,6 @@
 package main
 
 import (
-	"github.com/glugox/uno/apps/crm/db"
 	"github.com/glugox/uno/apps/crm/models"
 	"github.com/glugox/uno/apps/crm/routes"
 	uno "github.com/glugox/uno/pkg"
@@ -23,7 +22,7 @@ func main() {
 	// RegisterModels must come before uno.Init()
 	// as Init will initialize database
 	uno.RegisterModels(models.AllModels())
-	uno.RegisterSeeder(db.CRMSeed)
+	//uno.RegisterSeeder(db.CRMSeed)
 	uno.RegisterRoutes(routes.AllRoutes())
 
 	err = uno.Init()
